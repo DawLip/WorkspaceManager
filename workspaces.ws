@@ -1,0 +1,1 @@
+moj_projekt|projekt|~/workspace/fdsafsa
