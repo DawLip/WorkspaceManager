@@ -1,1 +1,1 @@
-moj_projekt|projekt|~/workspace/fdsafsa
+moj_projekt|projekt|/home/david/workspace/studies/WorkspaceManager

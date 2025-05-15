@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <vector>
 
 using namespace std;
 
@@ -16,9 +17,11 @@ public:
     string path;
     bool is_imported = false;
     bool is_loaded = false;
+    vector<string> init_commands;
 
     Workspace(string name, string short_name, string path);
     bool load_init_commands(string path);
+    bool execute_init_commands();
     void print();
 };
 

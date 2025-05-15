@@ -11,7 +11,7 @@ bool Workspaces::load_workspaces() {
 
     if (!inFile) {
         cerr << "[ERROR]: Main workspaces.ws file does not exist." << endl;
-        return 1;
+        return false;
     }
 
     string line;
