@@ -26,13 +26,14 @@ bool Workspace::load_init_commands(string path) {
 
 bool Workspace::execute_init_commands() {
     string session_name = this->name;
-    string window_name = "";
+    string window_name = "WorkspaceManager";
     string pane_name = "0";
 
     cout << "Executing init commands for workspace: " << name << endl;
 
     string commandCMD = "tmux new-session -d -s " + session_name + " -n WorkspaceManager";
     system(commandCMD.c_str());
+    system(("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \"./wm WorkspaceManager\" C-m").c_str());
 
     for (const auto& command : init_commands) {
         if(command.size() >= 2 && command.substr(0, 2) == "#>") {
@@ -52,6 +53,9 @@ bool Workspace::execute_init_commands() {
                 continue;
             } else if (operation == "split") {
                 commandCMD = "tmux split-window -" + target + " -t " + session_name + ":" + window_name;
+            } else if (operation == "cmd") {
+                system(target.c_str());
+                continue;
             } else {
                 cerr << "[ERROR]: Unknown operation: " << operation << endl;
                 continue;

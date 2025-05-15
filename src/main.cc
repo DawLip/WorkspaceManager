@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 
 #include "workspaces.h"
 
@@ -9,14 +10,18 @@ int main(int argc, char* argv[]) {
         cerr << "[ERROR]: No workspace specified." << endl;
         return 1;
     }
-    if(argc > 2) {
-        cerr << "[ERROR]: Too many arguments." << endl;
-        return 1;
-    }
 
-    string workspaceToLoad = argv[1];    
+    string arg1 = argv[1];
+
+    if(arg1.compare("WorkspaceManager") == 0) {
+        while(true) {
+            cout << "WorkspaceManager is running..." << endl;
+            sleep(1);
+        }
+    }
+ 
     Workspaces workspaces;
-    workspaces.load_workspace(workspaceToLoad);
+    workspaces.load_workspace(argv[1]);
 
     return 0;
 }
