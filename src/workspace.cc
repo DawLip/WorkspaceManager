@@ -24,6 +24,13 @@ bool Workspace::load_init_commands(string path) {
     return true;
 }
 
+void executeCMD(string cmd, string log=""){
+    system(cmd.c_str());
+    if(log=="") log=cmd;
+    cout << "[CMD] " << log << endl;
+
+}
+
 bool Workspace::execute_init_commands() {
     string session_name = this->name;
     string window_name = "WorkspaceManager";
@@ -31,9 +38,8 @@ bool Workspace::execute_init_commands() {
 
     cout << "Executing init commands for workspace: " << name << endl;
 
-    string commandCMD = "tmux new-session -d -s " + session_name + " -n WorkspaceManager";
-    system(commandCMD.c_str());
-    system(("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \"./wm WorkspaceManager\" C-m").c_str());
+    executeCMD("tmux new-session -d -s " + session_name + " -n WorkspaceManager");
+    executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \"wm WorkspaceManager\" C-m");
 
     for (const auto& command : init_commands) {
         if(command.size() >= 2 && command.substr(0, 2) == "#>") {
@@ -47,23 +53,29 @@ bool Workspace::execute_init_commands() {
             if (operation == "window") {
                 window_name = target;
                 pane_name = "0";
-                commandCMD = "tmux new-window -t " + session_name + " -n " + window_name;
-            } else if (operation == "pane") {
-                pane_name = target;
-                continue;
-            } else if (operation == "split") {
-                commandCMD = "tmux split-window -" + target + " -t " + session_name + ":" + window_name;
-            } else if (operation == "cmd") {
-                system(target.c_str());
-                continue;
-            } else {
-                cerr << "[ERROR]: Unknown operation: " << operation << endl;
+                executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \""+"cd "+ this->path+"\" C-m");
+                executeCMD("tmux new-window -t " + session_name + " -n " + window_name);
                 continue;
             }
-        } else commandCMD = "tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \""+command+"\" C-m";
+            if (operation == "pane") {
+                pane_name = target;
+                executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \""+"cd "+ this->path+"\" C-m");
+                continue;
+            }
+            if (operation == "split") {
+                executeCMD("tmux split-window -" + target + " -t " + session_name + ":" + window_name);
+                continue;
+            }
+            if (operation == "cmd") {
+                executeCMD(target);
+                continue;
+            }
+            
+            cerr << "[ERROR]: Unknown operation: " << operation << endl;
+            continue;
+        } 
 
-        cout << "Executing command: " << commandCMD << endl;
-        system(commandCMD.c_str());
+        executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \""+command+"\" C-m");
     }
 
     return true;

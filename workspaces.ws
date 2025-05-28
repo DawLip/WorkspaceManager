@@ -1,1 +1,2 @@
-moj_projekt|projekt|/home/david/workspace/studies/WorkspaceManager
+GenFlow|gf|/home/david/workspace/GenFlow
+

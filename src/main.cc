@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    string arg1 = argv[1];
+    string arg1 = string(argv[1]);
 
     if(arg1.compare("WorkspaceManager") == 0) {
         while(true) {
@@ -19,9 +19,10 @@ int main(int argc, char* argv[]) {
             sleep(1);
         }
     }
- 
     Workspaces workspaces;
-    workspaces.load_workspace(argv[1]);
+
+    if(arg1.compare("new") == 0) workspaces.newWorkapace(argv[2], argv[3]);
+    else workspaces.load_workspace(argv[1]);
 
     return 0;
 }

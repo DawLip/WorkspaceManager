@@ -1,18 +1,16 @@
 #include "workspaces.h"
 
 Workspaces::Workspaces() {
+    this->config_file = "/home/david/workspace/studies/WorkspaceManager/workspaces.ws";
     this->load_workspaces();
 }
 
 bool Workspaces::load_workspaces() {
-    cout << "Load workspaces" << endl;
+    this->printLog("load_workspaces");
 
-    ifstream inFile("workspaces.ws");
+    ifstream inFile(this->config_file);
 
-    if (!inFile) {
-        cerr << "[ERROR]: Main workspaces.ws file does not exist." << endl;
-        return false;
-    }
+    if (!inFile) return this->printError("Main workspaces.ws file does not exist");
 
     string line;
     while (getline(inFile, line)) {
@@ -34,7 +32,7 @@ bool Workspaces::load_workspaces() {
 }
 
 bool Workspaces::load_workspace(string name) {
-    cout << "Load workspace: " << name << endl;
+    this->printLog("load_workspace: " + name);
 
     for (auto& workspace : this->workspaces) {
         if(workspace->name == name || workspace->short_name == name) {
@@ -44,6 +42,45 @@ bool Workspaces::load_workspace(string name) {
         }
     }
 
-    cerr << "[ERROR]: Workspace not found." << endl;
+    return this->printError("Workspace "+name+" not found");
+}
+
+bool Workspaces::printError(string error_msg) {
+    cerr << "[ERROR-WORKSPACES] " << error_msg << endl;
     return false;
+}
+bool Workspaces::printLog(string log_msg) {
+    if(this->debug) cerr << "[LOG-WORKSPACES] " << log_msg << endl;
+    return true;
+}
+
+bool Workspaces::add_workspaces_record(string record) {
+    ofstream workspaces_file(this->config_file, ios::app);
+    if (!workspaces_file) return this->printError("Main workspaces.ws file does not exist");
+
+    workspaces_file << record << endl;
+    workspaces_file.close();
+
+    return true;
+}
+bool Workspaces::create_init_file() {
+    string path = filesystem::current_path().string() + "/init.ws.bash";
+
+    if(!filesystem::exists(path)) {
+        ofstream create_file(path);
+        if (!create_file) return this->printError("Failed to create init.ws.bash");
+        create_file.close();
+    }
+    return true;
+}
+
+bool Workspaces::newWorkapace(string name, string short_name) {
+    if(name.compare("")==0) return this->printError("Name can not be empty");
+
+    string record = name + "|"  + short_name + "|" + filesystem::current_path().string();
+    
+    this->add_workspaces_record(record);
+    this->create_init_file();
+
+    return true;
 }
