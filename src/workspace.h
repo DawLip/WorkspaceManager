@@ -8,9 +8,11 @@
 #include <cstdlib>
 #include <vector>
 
+#include "logger.h"
+
 using namespace std;
 
-class Workspace {
+class Workspace : public Logger {
 public:
     string name;
     string short_name;
@@ -23,6 +25,7 @@ public:
     bool load_init_commands(string path);
     bool execute_init_commands();
     void print();
+    void executeCMD(string cmd, string log="");
 };
 
 #endif

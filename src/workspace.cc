@@ -7,13 +7,10 @@ Workspace::Workspace(string name, string short_name, string path) {
 }
 
 bool Workspace::load_init_commands(string path) {
-    cout << "Loading init commands for workspace: " << name << endl;
+    printMsg("Loading init commands for workspace: " + name);
 
     ifstream inFile(path+"/init.ws.bash");
-    if (!inFile) {
-        cerr << "[ERROR]: '" << path << "/init.ws.bash' file does not exist." << endl;
-        return false;
-    }
+    if (!inFile) printError("'" + path + "/init.ws.bash' file does not exist.");
 
     string line;
     while (getline(inFile, line)) init_commands.push_back(line);
@@ -24,10 +21,10 @@ bool Workspace::load_init_commands(string path) {
     return true;
 }
 
-void executeCMD(string cmd, string log=""){
+void Workspace::executeCMD(string cmd, string log){
     system(cmd.c_str());
     if(log=="") log=cmd;
-    cout << "[CMD] " << log << endl;
+    printMsg(log);
 }
 
 bool Workspace::execute_init_commands() {
@@ -35,7 +32,7 @@ bool Workspace::execute_init_commands() {
     string window_name = "WorkspaceManager";
     string pane_name = "0";
 
-    cout << "Executing init commands for workspace: " << name << endl;
+    printMsg("Executing init commands for workspace: " + name);
 
     executeCMD("tmux new-session -d -s " + session_name + " -n WorkspaceManager");
     executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \"wm WorkspaceManager\" C-m");

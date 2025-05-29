@@ -10,10 +10,11 @@
 #include <filesystem>
 
 #include "workspace.h"
+#include "logger.h"
 
 using namespace std;
 
-class Workspaces {
+class Workspaces : public Logger {
     vector<Workspace*> workspaces;
     string config_file;
 
@@ -30,8 +31,7 @@ public:
 
     bool updateWorkapace(string ws_name, string ws_property, string value);
 
-    bool printError(string error_msg);
-    bool printLog(string log_msg);
+    bool removeWorkapace(string ws_name);
 };
 
 #endif

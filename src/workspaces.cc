@@ -6,11 +6,11 @@ Workspaces::Workspaces() {
 }
 
 bool Workspaces::load_workspaces() {
-    this->printLog("load_workspaces");
+    printLog("load_workspaces");
 
     ifstream inFile(this->config_file);
 
-    if (!inFile) return this->printError("Main workspaces.ws file does not exist");
+    if (!inFile) return printError("Main workspaces.ws file does not exist");
 
     string line;
     while (getline(inFile, line)) {
@@ -32,7 +32,7 @@ bool Workspaces::load_workspaces() {
 }
 
 bool Workspaces::load_workspace(string name) {
-    this->printLog("load_workspace: " + name);
+    printLog("load_workspace: " + name);
 
     for (auto& workspace : this->workspaces) {
         if(workspace->name == name || workspace->short_name == name) {
@@ -42,21 +42,12 @@ bool Workspaces::load_workspace(string name) {
         }
     }
 
-    return this->printError("Workspace "+name+" not found");
-}
-
-bool Workspaces::printError(string error_msg) {
-    cerr << "[ERROR-WORKSPACES] " << error_msg << endl;
-    return false;
-}
-bool Workspaces::printLog(string log_msg) {
-    if(this->debug) cerr << "[LOG-WORKSPACES] " << log_msg << endl;
-    return true;
+    return printError("Workspace "+name+" not found");
 }
 
 bool Workspaces::add_workspaces_record(string record) {
     ofstream workspaces_file(this->config_file, ios::app);
-    if (!workspaces_file) return this->printError("Main workspaces.ws file does not exist");
+    if (!workspaces_file) return printError("Main workspaces.ws file does not exist");
 
     workspaces_file << record << endl;
     workspaces_file.close();
@@ -68,14 +59,14 @@ bool Workspaces::create_init_file() {
 
     if(!filesystem::exists(path)) {
         ofstream create_file(path);
-        if (!create_file) return this->printError("Failed to create init.ws.bash");
+        if (!create_file) return printError("Failed to create init.ws.bash");
         create_file.close();
     }
     return true;
 }
 
 bool Workspaces::newWorkapace(string name, string short_name) {
-    if(name.compare("")==0) return this->printError("Name can not be empty");
+    if(name.compare("")==0) return printError("Name can not be empty");
 
     string record = name + "|"  + short_name + "|" + filesystem::current_path().string();
     
@@ -86,9 +77,9 @@ bool Workspaces::newWorkapace(string name, string short_name) {
 }
 
 bool Workspaces::updateWorkapace(string ws_name, string ws_property, string value) {
-    if(ws_name.compare("")==0) return this->printError("'ws_name' can not be empty");
-    if(ws_property.compare("")==0) return this->printError("'ws_property' can not be empty");
-    if(value.compare("")==0) return this->printError("'value' can not be empty");
+    if(ws_name.compare("")==0) return printError("'ws_name' can not be empty");
+    if(ws_property.compare("")==0) return printError("'ws_property' can not be empty");
+    if(value.compare("")==0) return printError("'value' can not be empty");
     
     for (auto& workspace : this->workspaces) {
         if(workspace->name == ws_name || workspace->short_name == ws_name) {
@@ -109,5 +100,26 @@ bool Workspaces::updateWorkapace(string ws_name, string ws_property, string valu
         }
     }
 
-    return this->printError("[ERROR] Workspace "+ws_name+" not found");
+    return printError("[ERROR] Workspace "+ws_name+" not found");
+}
+
+bool Workspaces::removeWorkapace(string ws_name) {
+    if(ws_name.compare("") == 0) return printError("'ws_name' can not be empty");
+
+    for (auto it = this->workspaces.begin(); it != this->workspaces.end(); ++it) {
+        if((*it)->name == ws_name || (*it)->short_name == ws_name) {
+            this->workspaces.erase(it);
+
+            ofstream file(this->config_file, ios::trunc);
+            file.close();
+
+            for (auto& ws : this->workspaces) {
+                string record = ws->name + "|" + ws->short_name + "|" + ws->path;
+                this->add_workspaces_record(record);
+            }
+
+            return true;
+        }
+    }
+    return false;
 }
