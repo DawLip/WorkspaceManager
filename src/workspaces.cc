@@ -84,3 +84,30 @@ bool Workspaces::newWorkapace(string name, string short_name) {
 
     return true;
 }
+
+bool Workspaces::updateWorkapace(string ws_name, string ws_property, string value) {
+    if(ws_name.compare("")==0) return this->printError("'ws_name' can not be empty");
+    if(ws_property.compare("")==0) return this->printError("'ws_property' can not be empty");
+    if(value.compare("")==0) return this->printError("'value' can not be empty");
+    
+    for (auto& workspace : this->workspaces) {
+        if(workspace->name == ws_name || workspace->short_name == ws_name) {
+            if (ws_property.compare("name")==0) workspace->name = value;
+            if (ws_property.compare("short_name")==0) workspace->short_name = value;
+            if (ws_property.compare("path")==0) workspace->path = value;
+
+            ofstream file(this->config_file, ios::trunc); 
+            file.close();
+            
+            for (auto& ws : this->workspaces) {
+                string record = ws->name + "|"  + ws->short_name + "|" + ws->path;
+                this->add_workspaces_record(record);
+            }
+
+            
+            return true;
+        }
+    }
+
+    return this->printError("[ERROR] Workspace "+ws_name+" not found");
+}

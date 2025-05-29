@@ -28,6 +28,8 @@ public:
     bool add_workspaces_record(string record);
     bool create_init_file();
 
+    bool updateWorkapace(string ws_name, string ws_property, string value);
+
     bool printError(string error_msg);
     bool printLog(string log_msg);
 };

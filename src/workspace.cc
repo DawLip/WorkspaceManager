@@ -28,7 +28,6 @@ void executeCMD(string cmd, string log=""){
     system(cmd.c_str());
     if(log=="") log=cmd;
     cout << "[CMD] " << log << endl;
-
 }
 
 bool Workspace::execute_init_commands() {
@@ -53,29 +52,18 @@ bool Workspace::execute_init_commands() {
             if (operation == "window") {
                 window_name = target;
                 pane_name = "0";
-                executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \""+"cd "+ this->path+"\" C-m");
                 executeCMD("tmux new-window -t " + session_name + " -n " + window_name);
-                continue;
+                executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \""+"cd "+ this->path+"\" C-m");
             }
-            if (operation == "pane") {
+            else if (operation == "pane") {
                 pane_name = target;
                 executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \""+"cd "+ this->path+"\" C-m");
-                continue;
             }
-            if (operation == "split") {
-                executeCMD("tmux split-window -" + target + " -t " + session_name + ":" + window_name);
-                continue;
-            }
-            if (operation == "cmd") {
-                executeCMD(target);
-                continue;
-            }
+            else if (operation == "split") executeCMD("tmux split-window -" + target + " -t " + session_name + ":" + window_name);
+            else if (operation == "cmd") executeCMD(target);
+            else cerr << "[ERROR]: Unknown operation: " << operation << endl;
             
-            cerr << "[ERROR]: Unknown operation: " << operation << endl;
-            continue;
-        } 
-
-        executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \""+command+"\" C-m");
+        } else executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \""+command+"\" C-m");
     }
 
     return true;
