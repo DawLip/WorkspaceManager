@@ -2,17 +2,17 @@
 ```
 make
 ```
-W ./src/workspaces.cc zmień na twoją ścieżkę do workspaces.ws
+W ./src/config.h ustaw ścieżkę do programu
 ``` cpp
-Workspaces::Workspaces() {
-    this->config_file = "Ścieżka do '/workspaces.ws'";
-    this->load_workspaces();
-}
+struct Config {
+    string program_path = "/home/david/workspace/studies/WorkspaceManager/"; // <= ustaw swoją ścieżkę
+    bool debug = true;
+};
 ```
 Następnie dodaj ten katalog do **$PATH**\
 **Uruchomienie programu i stworzenie pierwszego workspace**
 ```
-wm new your_workspace
+wm new your_workspace_name your_workspace_short_name
 ```
 
 # Komendy programu

@@ -1,14 +1,14 @@
 #include "workspaces.h"
+#include "config.h"
 
 Workspaces::Workspaces() {
-    this->config_file = "/home/david/workspace/studies/WorkspaceManager/workspaces.ws";
     this->load_workspaces();
 }
 
 bool Workspaces::load_workspaces() {
     printLog("load_workspaces");
 
-    ifstream inFile(this->config_file);
+    ifstream inFile(config.program_path + "workspaces.ws");
 
     if (!inFile) return printError("Main workspaces.ws file does not exist");
 
@@ -46,7 +46,7 @@ bool Workspaces::load_workspace(string name) {
 }
 
 bool Workspaces::add_workspaces_record(string record) {
-    ofstream workspaces_file(this->config_file, ios::app);
+    ofstream workspaces_file(config.program_path + "workspaces.ws", ios::app);
     if (!workspaces_file) return printError("Main workspaces.ws file does not exist");
 
     workspaces_file << record << endl;
@@ -87,7 +87,7 @@ bool Workspaces::updateWorkapace(string ws_name, string ws_property, string valu
             if (ws_property.compare("short_name")==0) workspace->short_name = value;
             if (ws_property.compare("path")==0) workspace->path = value;
 
-            ofstream file(this->config_file, ios::trunc); 
+            ofstream file(config.program_path + "workspaces.ws", ios::trunc); 
             file.close();
             
             for (auto& ws : this->workspaces) {
@@ -110,7 +110,7 @@ bool Workspaces::removeWorkapace(string ws_name) {
         if((*it)->name == ws_name || (*it)->short_name == ws_name) {
             this->workspaces.erase(it);
 
-            ofstream file(this->config_file, ios::trunc);
+            ofstream file(config.program_path + "workspaces.ws", ios::trunc);
             file.close();
 
             for (auto& ws : this->workspaces) {

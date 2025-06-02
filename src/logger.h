@@ -9,11 +9,13 @@
 #include <cstdlib>
 #include <filesystem>
 
+#include "config.h"
+
 using namespace std;
 
 class Logger {
   public:
-    bool debug = true;
+    bool debug = config.debug;
     bool printError(string error_msg);
     bool printLog(string log_msg);
     bool printMsg(string msg);
