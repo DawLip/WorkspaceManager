@@ -29,13 +29,13 @@ void Workspace::executeCMD(string cmd, string log){
 
 bool Workspace::execute_init_commands() {
     string session_name = this->name;
-    string window_name = "WorkspaceManager";
+    string window_name = "cmd";
     string pane_name = "0";
 
     printMsg("Executing init commands for workspace: " + name);
 
-    executeCMD("tmux new-session -d -s " + session_name + " -n WorkspaceManager");
-    executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \"wm WorkspaceManager\" C-m");
+    executeCMD("tmux new-session -d -s " + session_name + " -n cmd");
+    executeCMD("tmux send-keys -t "+session_name+":"+window_name+"."+pane_name+" \""+"cd "+ this->path+"\" C-m");
 
     for (const auto& command : init_commands) {
         if(command.size() >= 2 && command.substr(0, 2) == "#>") {

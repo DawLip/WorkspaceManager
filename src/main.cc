@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unistd.h>
+#include "config.h"
 
 #include "workspaces.h"
 
@@ -12,13 +13,6 @@ int main(int argc, char* argv[]) {
     }
 
     string arg1 = string(argv[1]);
-
-    if(arg1.compare("WorkspaceManager") == 0) {
-        while(true) {
-            cout << "WorkspaceManager is running..." << endl;
-            sleep(1);
-        }
-    }
     Workspaces workspaces;
 
     if(arg1.compare("new") == 0) workspaces.newWorkapace(argv[2], argv[3]);

@@ -5,10 +5,9 @@
 
 using namespace std;
 
-struct Config {
+class Config {
+public:
     string program_path = "/home/david/workspace/studies/WorkspaceManager/"; // /home/david/programs/WorkspaceManager/
-    bool debug = true;
+    bool debug = false;
 };
-
-Config config = Config();
 #endif

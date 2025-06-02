@@ -9,6 +9,6 @@ bool Logger::printLog(string log_msg) {
     return true;
 }
 bool Logger::printMsg(string msg) {
-    if(this->debug) cerr << "[WM] " << msg << endl;
+    if(this->debug) cout << "[WM] " << msg << endl;
     return true;
 }

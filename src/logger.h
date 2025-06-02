@@ -13,9 +13,8 @@
 
 using namespace std;
 
-class Logger {
+class Logger: public Config {
   public:
-    bool debug = config.debug;
     bool printError(string error_msg);
     bool printLog(string log_msg);
     bool printMsg(string msg);
